@@ -8,8 +8,9 @@
 * android手机打开usb调试
 * android手机允许模拟点击(一部分手机有 如小米6x)
 * 运行结果会以txt文件格式导出 (目录自动创建) ./result/${yyyyMMdd}/*.txt
-
+* 最新的adb文件参考[官方网站](https://developer.android.com/studio/releases/platform-tools) 
 > python run.py
+>
 > * 提示使用 python run.py -h 或 python run.py --help
 
 > python run.py -h
@@ -21,12 +22,15 @@
 > * 优先级第二 且与其他参数冲突
 
 > python run.py -s xxx
+>
 > * 绑定adb操作的设备号 多设备适用
 
 > python run.py -p xxx
+>
 > * 绑定adb运行的端口号 adb端口被占用适用(鲁大师 360手机助手等)
 
 > python run.py -p xxx -s xxx
+>
 > * 绑定adb操作的设备号和运行的端口号
 
 ## 配置环境
@@ -39,7 +43,7 @@
     - dump => 累计查找结果达到指定个数 会从内存写入到文件 <br>
     - sleep => 休眠时间 单位分钟 <br>
     - sleep-flag => 查找失败 会切换账号 切换账号到指定次数 会休眠
-    
+
 > * 安装python环境 选择大于3.3的版本 <br>
     centos7 参考链接 [「点击转跳」](https://segmentfault.com/a/1190000015628625)
 
@@ -48,7 +52,7 @@
     2. # virtualenv --no-site-packages venv <br>
  &nbsp;&nbsp;&nbsp; # virtualenv --no-site-packages -p /usr/bin/python3.7 venv <br>
     3. # ./venv/bin/python run.py -h
-    
+
 ## 技术堆栈
 
 > * 采用adb命令对android手机 模拟点击

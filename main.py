@@ -5,9 +5,12 @@
  @author: valor
  @file: main.py
  @time: 2018/11/5 15:59
+ @modified: sukanka
+ @time: 2018/11/28 21:43
 """
 
 import time
+from os  import getcwd
 from adb import By
 from adb import Adb
 import file
@@ -35,6 +38,8 @@ class Main:
         self._loop = self._json['loop']
         # 文件路径 手机号码一行一个
         self._file = self._json['file']
+		### 保存路径
+        sel._result = sel._json['results']
         # 自动切换账号 微信登录 微信预留账号
         self._account = self._json['account']
         # 累计查找结果达到指定个数 会从内存写入到文件
@@ -52,22 +57,23 @@ class Main:
 
         # list到一定长度 输出到文件
         if int(self._dump) == len(_list):
-            self._file.dump(_list, key)
+        with open()
+            self._file.dump(_list,sel._result)
 
     def init(self):
         self._adb.click_by_text_after_refresh('通讯录')
-        self._adb.click_by_text_after_refresh('外部联系人')
-        self._adb.click_by_text_after_refresh('添加')
-        self._adb.click_by_text_after_refresh('微信号/手机号')
+        self._adb.click_by_text_after_refresh('新的朋友')
+        self._adb.click_by_text_after_refresh('添加朋友')
+        #self._adb.click_by_text_after_refresh('微信号/QQ号/手机号')
 
     def add_friends(self, phone: str):
         print('===== 开始查找 ===== ' + phone + ' =====')
-        self._adb.click_by_text_after_refresh('微信号/手机号')
+        self._adb.click_by_text_after_refresh('微信号/QQ号/手机号')
 
         # 输入号码
         self._adb.adb_input(phone)
         # 点击搜索
-        self._adb.click_by_text_after_refresh('搜索：' + phone)
+        self._adb.click_by_text_after_refresh('搜索:' + phone)
         print('  ==> 点击搜索 ==>  ')
 
         self._adb.refresh_nodes()
@@ -154,21 +160,25 @@ class Main:
                 self.init()
 
         # 查找成功
-        elif self._adb.find_nodes_by_text('添加为联系人'):
+        elif self._adb.find_nodes_by_text('添加到通讯录'):
             self._adb.click(0)
-            self._adb.click_by_text_after_refresh('发送添加邀请')
+            time.sleep(2) # 暂停2s
+            self._adb.click_by_text_after_refresh('发送')
 
             self._adb.refresh_nodes()
-            if self._adb.find_nodes_by_text('发送添加邀请'):
+            if self._adb.find_nodes_by_text('发送'):
                 print('  <== 发送失败 <==  ')
                 self.push('failed', phone + '发送失败')
+                self._adb.adb_put_back()
+                self._adb.adb_put_back()
                 self._adb.adb_put_back()
                 self._adb.adb_put_back()
             else:
                 print(' !! <== 发送成功 <==  ')
                 self.push('success', phone + '发送成功')
                 self._adb.adb_put_back()
-
+                self._adb.adb_put_back()
+                
         elif self._adb.find_nodes_by_text('发消息'):
             print('  <== 已经是好友 无需再次添加 <==  ')
             self.push('failed', phone + '已经是好友')
@@ -187,16 +197,17 @@ class Main:
         # 清空已输入的字符
         self._adb.refresh_nodes()
         if self._adb.find_nodes('true', By.naf):
-            self._adb.click(1)
+            self._adb.click(0)
 
     def main(self):
         self.init()
 
         if 'file' == self._mode:
-            with self._file.open(self._file) as f:
+            with open(getcwd()+self._file) as f:
                 for line in f:
                     line = file.delete_line_breaks(line)
                     self.add_friends(line)
+                    time.sleep(20)# 休眠20s
                 f.close()
         elif 'loop' == self._mode:
             for line in range(int(self._loop[0]), int(self._loop[1])):
